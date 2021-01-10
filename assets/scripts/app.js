@@ -4,6 +4,8 @@ const modal = document.getElementById("add-modal");
 const cancelBtn = modal.querySelector(".btn--passive");
 const addMovieToList = cancelBtn.nextElementSibling;
 const userInputs = modal.querySelectorAll("input");
+const emptyMovieList = document.getElementById('entry-text');
+const movieList = document.getElementById('movie-list');
 
 const movies = [];
 
@@ -22,6 +24,31 @@ const toggleModal = () => {
 // clear user inputs in modal
 const clearUserInput = () => {
   userInputs.forEach(input => input.value = "");
+};
+
+const updateUI = () => {
+  if(movies.length > 0) {
+    // Clears section display
+    emptyMovieList.style.display = "none";
+  } else {
+    emptyMovieList.style.display = "block";
+  }
+};
+
+const renderMovieItem = (title, imageURL, rating) => {
+  const newMovie = document.createElement('li');
+  newMovie.className = "movie-element";
+  newMovie.innerHTML = `
+    <div class="movie-element__image">
+      <img src="${imageURL}" alt="${title}">
+    </div>
+    <div class="movie-element__infor">
+      <h2>${title}</h2>
+      <p>${rating}/5 stars</p>
+    </div>
+  `;
+
+  movieList.appendChild(newMovie);
 };
 
 // Takes userInput and verifies that correct input was provided from user
@@ -47,10 +74,9 @@ const addMovieHandler = () => {
   };
   movies.push(newMovie);
   toggleModal();
-  // for(i = 0; i < userInputs.length; i++) {
-  //   userInputs[i].value = "";
-  // }
   clearUserInput();
+  updateUI();
+  renderMovieItem(newMovie.title, newMovie.image, newMovie.rating);
 };
 
 // EventListeners for the page
