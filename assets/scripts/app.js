@@ -5,6 +5,8 @@ const cancelBtn = modal.querySelector(".btn--passive");
 const addMovieToList = cancelBtn.nextElementSibling;
 const userInputs = modal.querySelectorAll("input");
 
+const movies = [];
+
 // Function to toggle backdrop appearing
 const toggleBackdrop = () => {
   backdrop.classList.toggle('visible');
@@ -14,6 +16,12 @@ const toggleBackdrop = () => {
 const toggleModal = () => {
   modal.classList.toggle('visible');
   toggleBackdrop();
+  clearUserInput();
+};
+
+// clear user inputs in modal
+const clearUserInput = () => {
+  userInputs.forEach(input => input.value = "");
 };
 
 // Takes userInput and verifies that correct input was provided from user
@@ -30,6 +38,19 @@ const addMovieHandler = () => {
       alert("Please enter valid values in the fields.");
       return;
   }
+
+  // Creates movie object, adds to movie[], and clears inputs
+  const newMovie = {
+    title: movieTitle,
+    image: imageURL,
+    rating: rating
+  };
+  movies.push(newMovie);
+  toggleModal();
+  // for(i = 0; i < userInputs.length; i++) {
+  //   userInputs[i].value = "";
+  // }
+  clearUserInput();
 };
 
 // EventListeners for the page
