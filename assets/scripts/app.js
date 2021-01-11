@@ -6,18 +6,25 @@ const addMovieToList = cancelBtn.nextElementSibling;
 const userInputs = modal.querySelectorAll("input");
 const emptyMovieList = document.getElementById('entry-text');
 const movieList = document.getElementById('movie-list');
+const deleteMovieModal = document.getElementById("delete-modal");
 
 const movies = [];
 
 // Function to toggle backdrop appearing
-const toggleBackdrop = () => {
-  backdrop.classList.toggle('visible');
+const addBackdrop = () => {
+  backdrop.classList.add('visible');
+};
+
+// Created to tweak code and fix issue with showing addMovieModal if user clicks on backdrop
+const closeMovieModal = () => {
+  modal.classList.remove('visible');
+  backdrop.classList.remove('visible');
 };
 
 // Toggle modal appearing, along with backdrop
-const toggleModal = () => {
-  modal.classList.toggle('visible');
-  toggleBackdrop();
+const showMovieModal = () => {
+  modal.classList.add('visible');
+  addBackdrop();
   clearUserInput();
 };
 
@@ -35,7 +42,7 @@ const updateUI = () => {
   }
 };
 
-const removeMovie = (movieId) => {
+const confirmRemoveMovie = (movieId) => {
   let movieIndex = 0;
   for(const movie of movies) {
     if(movie.id === movieId) {
@@ -45,10 +52,19 @@ const removeMovie = (movieId) => {
   }
   // Remove element at specified index
   movies.splice(movieIndex, 1);
-
   movieList.children[movieIndex].remove();
-  // Another option for browser compatability
-  // movieList.removeChild(movie.children[movieIndex]);
+};
+
+const cancelMovieDeletion = () => {
+  deleteMovieModal.classList.remove("visible");
+};
+
+const removeMovie = (movieId) => {
+  // Using toggle would not make sense here
+  addBackdrop();
+  deleteMovieModal.classList.add("visible");
+  // closeMovieModal();
+  // confirmRemoveMovie(movieId);
 };
 
 const renderMovieItem = (id, title, imageURL, rating) => {
@@ -91,14 +107,20 @@ const addMovieHandler = () => {
     rating: rating
   };
   movies.push(newMovie);
-  toggleModal();
+  backdrop.classList.remove('visible');
+  modal.classList.remove('visible');
   clearUserInput();
   updateUI();
   renderMovieItem(newMovie.id, newMovie.title, newMovie.image, newMovie.rating);
 };
 
+const backdropClick = () => {
+  closeMovieModal();
+  cancelMovieDeletion();
+};
+
 // EventListeners for the page
-addMovieBtn.addEventListener('click', toggleModal);
-backdrop.addEventListener('click', toggleModal);
-cancelBtn.addEventListener('click', toggleModal);
+addMovieBtn.addEventListener('click', showMovieModal);
+backdrop.addEventListener('click', backdropClick);
+cancelBtn.addEventListener('click', closeMovieModal);
 addMovieToList.addEventListener('click', addMovieHandler);
