@@ -35,19 +35,35 @@ const updateUI = () => {
   }
 };
 
-const renderMovieItem = (title, imageURL, rating) => {
+const removeMovie = (movieId) => {
+  let movieIndex = 0;
+  for(const movie of movies) {
+    if(movie.id === movieId) {
+      break;
+    }
+    movieIndex++;
+  }
+  // Remove element at specified index
+  movies.splice(movieIndex, 1);
+
+  movieList.children[movieIndex].remove();
+  // Another option for browser compatability
+  // movieList.removeChild(movie.children[movieIndex]);
+};
+
+const renderMovieItem = (id, title, imageURL, rating) => {
   const newMovie = document.createElement('li');
   newMovie.className = "movie-element";
   newMovie.innerHTML = `
     <div class="movie-element__image">
       <img src="${imageURL}" alt="${title}">
     </div>
-    <div class="movie-element__infor">
+    <div class="movie-element__info">
       <h2>${title}</h2>
       <p>${rating}/5 stars</p>
     </div>
   `;
-
+  newMovie.addEventListener('click', removeMovie.bind(null, id));
   movieList.appendChild(newMovie);
 };
 
@@ -68,6 +84,8 @@ const addMovieHandler = () => {
 
   // Creates movie object, adds to movie[], and clears inputs
   const newMovie = {
+    // Can add check to make sure that id does not exist elsewhere
+    id: Math.random().toString(),
     title: movieTitle,
     image: imageURL,
     rating: rating
@@ -76,7 +94,7 @@ const addMovieHandler = () => {
   toggleModal();
   clearUserInput();
   updateUI();
-  renderMovieItem(newMovie.title, newMovie.image, newMovie.rating);
+  renderMovieItem(newMovie.id, newMovie.title, newMovie.image, newMovie.rating);
 };
 
 // EventListeners for the page
