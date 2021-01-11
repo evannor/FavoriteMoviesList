@@ -46,14 +46,15 @@ const confirmRemoveMovie = (movieId) => {
   let movieIndex = 0;
   for(const movie of movies) {
     if(movie.id === movieId) {
+      movies.splice(movieIndex, 1);
+      movieList.children[movieIndex].remove();
       break;
     }
     movieIndex++;
   }
   // Remove element at specified index
-  movies.splice(movieIndex, 1);
-  movieList.children[movieIndex].remove();
   cancelMovieDeletion();
+  updateUI();
 };
 
 const cancelMovieDeletion = () => {
@@ -66,7 +67,14 @@ const removeMovie = (movieId) => {
   deleteMovieModal.classList.add("visible");
 
   const cancelDeleteBtn = deleteMovieModal.querySelector(".btn--passive");
-  const deleteBtn = deleteMovieModal.querySelector(".btn--danger");
+  let deleteBtn = deleteMovieModal.querySelector(".btn--danger");
+
+  // Remove previously created eventListeners by creating a deep clone
+  deleteBtn.replaceWith(deleteBtn.cloneNode(true));
+  deleteBtn = deleteMovieModal.querySelector(".btn--danger");
+
+  cancelDeleteBtn.removeEventListener('click', cancelMovieDeletion);
+
   cancelDeleteBtn.addEventListener('click', cancelMovieDeletion);
   deleteBtn.addEventListener('click', confirmRemoveMovie.bind(null, movieId));
 };
