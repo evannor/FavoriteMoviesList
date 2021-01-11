@@ -53,18 +53,22 @@ const confirmRemoveMovie = (movieId) => {
   // Remove element at specified index
   movies.splice(movieIndex, 1);
   movieList.children[movieIndex].remove();
+  cancelMovieDeletion();
 };
 
 const cancelMovieDeletion = () => {
   deleteMovieModal.classList.remove("visible");
+  backdrop.classList.remove('visible');
 };
 
 const removeMovie = (movieId) => {
-  // Using toggle would not make sense here
   addBackdrop();
   deleteMovieModal.classList.add("visible");
-  // closeMovieModal();
-  // confirmRemoveMovie(movieId);
+
+  const cancelDeleteBtn = deleteMovieModal.querySelector(".btn--passive");
+  const deleteBtn = deleteMovieModal.querySelector(".btn--danger");
+  cancelDeleteBtn.addEventListener('click', cancelMovieDeletion);
+  deleteBtn.addEventListener('click', confirmRemoveMovie.bind(null, movieId));
 };
 
 const renderMovieItem = (id, title, imageURL, rating) => {
